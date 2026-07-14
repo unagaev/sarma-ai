@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual env
+.venv/
+env/
+
+# Conda
+.env
+.python-version
+
+# Chroma
+chroma/
+data/chroma_db
+notebooks/chroma_db
+
+# Ollama
+models/
+
+# PDF
+data/*.pdf
+
+# Environment variable
+*.env
+
+# VS Code
+.vscode/
+
+# Setup info
+src/sarma.egg-info
