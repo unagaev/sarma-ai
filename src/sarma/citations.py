@@ -1,36 +1,21 @@
-def extract_citations(documents):
-    """
-    Extract citation information from retrieved documents.
-    """
+def format_citations(documents):
 
     citations = []
-
-    seen = set()
 
     for doc in documents:
 
         source = doc.metadata.get(
             "source",
-            "unknown"
+            "Unknown"
         )
 
         page = doc.metadata.get(
             "page",
-            None
+            "Unknown"
         )
 
-        citation = {
-            "source": source,
-            "page": page
-        }
-
-        key = (
-            source,
-            page
+        citations.append(
+            f"{source}, page {page}"
         )
 
-        if key not in seen:
-            citations.append(citation)
-            seen.add(key)
-
-    return citations
+    return list(set(citations))

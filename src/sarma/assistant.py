@@ -13,40 +13,10 @@ class SarmaAssistant:
         """
         Extract unique citations from retrieved documents.
         """
-
-        citations = []
-
-        seen = set()
-
-        for doc in docs:
-
-            source = doc.metadata.get(
-                "source",
-                "unknown"
-            )
-
-            page = doc.metadata.get(
-                "page",
-                None
-            )
-
-            key = (
-                source,
-                page
-            )
-
-            if key not in seen:
-
-                citations.append(
-                    {
-                        "source": source,
-                        "page": page,
-                    }
-                )
-
-                seen.add(key)
-
-        return citations
+    
+        from sarma.citations import format_citations
+    
+        return format_citations(docs)
 
 
     def build_context(self, docs):
@@ -70,12 +40,12 @@ class SarmaAssistant:
 
             context_parts.append(
                 f"""
-Source: {source}
-Page: {page}
-
-Content:
-{doc.page_content}
-"""
+                Source: {source}
+                Page: {page}
+                
+                Content:
+                {doc.page_content}
+                """
             )
 
         return "\n\n".join(
