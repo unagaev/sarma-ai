@@ -1,6 +1,6 @@
 """
 Optional input guardrail node (Tier 4 - not wired into create_sarma_graph by
-default). Add it yourself if you have time before the interview; either way,
+default). Either way,
 it's a legitimate thing to describe as "designed but deliberately not
 rushed into the graph without testing."
 
