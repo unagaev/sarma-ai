@@ -24,7 +24,7 @@ docs/
 models/
 
 # PDF
-data/*.pdf
+data/knowledge_base/*.pdf
 
 # Environment variable
 *.env

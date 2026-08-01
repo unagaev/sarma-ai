@@ -1,4 +1,5 @@
 from sarma.citations import format_citations
+from sarma.tools.analysis import analyse_area
 
 # Chroma's default similarity_search_with_score returns a DISTANCE, where
 # LOWER means MORE similar (this repo saw ~0.33-0.41 for genuinely relevant
@@ -76,6 +77,7 @@ Content:
     response = chain.invoke(
         {
             "context": context,
+            "gis_data": state["gis_data"],
             "question": state["question"]
         }
     )
@@ -87,6 +89,14 @@ Content:
         "citations": format_citations(docs)
     }
 
+def gis_node(state):
+    
+    gis_result = analyse_area()
+    
+    return {
+    
+    "gis_data": gis_result
+    }
 
 def no_context_node(state):
     """
@@ -112,4 +122,5 @@ def route_by_relevance(state):
     retrieval found something plausibly relevant to the question.
     """
 
-    return "generate" if state.get("sufficient_context") else "no_context"
+    #return "generate" if state.get("sufficient_context") else "no_context"
+    return "generate"

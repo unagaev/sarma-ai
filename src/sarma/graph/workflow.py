@@ -5,6 +5,7 @@ from sarma.graph.state import SarmaState
 from sarma.graph.nodes import (
     retrieve_node,
     generate_node,
+    gis_node,
     no_context_node,
     route_by_relevance,
     DEFAULT_SCORE_THRESHOLD,
@@ -26,8 +27,10 @@ def create_sarma_graph(retriever, prompt, llm, score_threshold=DEFAULT_SCORE_THR
     graph.add_node("retrieve", partial(retrieve_node, retriever=retriever, score_threshold=score_threshold))
     graph.add_node("generate", partial(generate_node, prompt=prompt, llm=llm))
     graph.add_node("no_context", no_context_node)
-
     graph.add_edge(START, "retrieve")
+    graph.add_node("gis", gis_node)
+    graph.add_edge(START, 'gis')
+    graph.add_edge("gis", "retrieve")
     graph.add_conditional_edges(
         "retrieve",
         route_by_relevance,

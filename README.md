@@ -1,5 +1,7 @@
 # SARMA AI
 
+Spatial AI Retrieval & Mapping Assistant:)
+
 Geospatial Environmental Intelligence Assistant that combines Retrieval-Augmented Generation (RAG), AI agents, and spatial analytics to help users explore environmental documents, satellite information, and geospatial datasets through natural language.
 
 ## Features

@@ -4,6 +4,7 @@ class SarmaState(TypedDict):
     question: str
     documents: list
     context: str
+    gis_data: str
     answer: str
     citations: List[str]
     best_score: Optional[float]        # lowest (= most similar) Chroma distance among retrieved docs
