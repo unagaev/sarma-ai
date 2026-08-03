@@ -17,6 +17,9 @@ chroma/
 data/chroma_db
 notebooks/chroma_db
 
+# Archive
+data/archive/
+
 # Graphic
 data/*.jpg
 data/*.png
