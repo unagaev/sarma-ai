@@ -100,8 +100,6 @@ Core pipeline (ingestion → embeddings → retrieval, and GIS analysis → NDVI
 
 - **Retrieval confidence gate is currently disabled.** `route_by_relevance()` in `graph/nodes.py` is hardcoded to always proceed to generation instead of routing on `sufficient_context`; a question with no relevant documents will still get an answer instead of an explicit refusal.
 - **GIS analysis re-runs on every question**, with no caching, even though the AOI and date range never change between calls — `analyse_area()` re-downloads/re-computes everything each time.
-- **AOI and date range are hardcoded**, not derived from the question — the system currently answers about one fixed location only.
-- **`assistant.py` and `rag/rag.py` are broken.** Neither passes `gis_data` to `rag_prompt`, which now requires it — both raise a missing-variable error if called. They predate the GIS branch and are superseded by `create_sarma_graph()`; recommend retiring them rather than fixing them, to avoid maintaining two implementations of the same pipeline.
 - **Vector store ingestion is not idempotent** — re-running ingestion into the same Chroma directory appends duplicate chunks rather than upserting.
 - **`tools/worldcover.py` has a hardcoded, machine-specific path** (`BASE_DIR`), so it only runs as-is on the original development machine.
 - `docs/architecture.md`, `docs/decisions.md`, and `docs/roadmap.md` describe an earlier, RAG-only version of the graph and need updating to reflect the GIS branch and the points above.
