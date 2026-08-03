@@ -2,7 +2,7 @@ from pathlib import Path
 from langchain_chroma import Chroma
 from sarma.embeddings import embeddings
 
-CHROMA_PATH = ("./../../data/chroma_db")
+CHROMA_PATH = str(Path(__file__).resolve().parent.parent.parent.parent / "data" / "chroma_db")
 
 def create_vector_store(chunks):
 	

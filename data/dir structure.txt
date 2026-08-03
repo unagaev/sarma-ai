@@ -1,0 +1,82 @@
+sarma-ai/
+│
+├── src/
+│   └── sarma/
+│
+│       ├── ingestion/
+│       │
+│       │── loader.py
+│       │       PDF document loading
+│       │
+│       ├── splitter.py
+│       │       Document chunking
+│       │       chunk_size=1000
+│       │       overlap=200
+│       │
+│       ├── embeddings/
+│       │       Text embedding generation
+│       │       Sentence Transformers
+│       │
+│       ├── vectorstore/
+│       │
+│       │── chroma database
+│       │       Stores vector representations
+│       │       + metadata
+│       │
+│       ├── retriever.py
+│       │       Semantic search
+│       │       Top-k relevant chunks
+│       │
+│       ├── rag/
+│       │
+│       │── prompt templates
+│       │       Context + question
+│       │
+│       ├── graph/
+│       │
+│       │── LangGraph workflow
+│       │       Agent routing
+│       │       RAG + GIS tools
+│       │
+│       ├── tools/
+│       │
+│       │── sentinel.py
+│       │       Sentinel-2 processing
+│       │
+│       │── worldcover.py
+│       │       Land cover analysis
+│       │
+│       │── ndvi.py
+│       │       Vegetation index calculation
+│       │
+│       │── analysis.py
+│               GIS analysis pipeline
+│
+│
+├── data/
+│
+│   ├── knowledge_base/
+│       Environmental PDFs: agronomy, climate, papers, remote_sensing, soil
+│
+│   ├── chroma_db/
+│       Vector database
+│
+│
+├── notebooks/
+│
+│   ├── 01_experiments.ipynb
+│   ├── 02_document_test.ipynb
+│   ├── 03_semantic_search.ipynb
+│   ├── 04_assistant_test.ipynb
+│   ├── 05_retrieval_eval.ipynb
+│   └── 06_sentinel_ndvi_test.ipynb
+├── docs /
+│	├── architecture.md
+│   ├── decisions.md
+│   └── roadmap.md
+│   		
+├── requirements.txt
+├── README.md
+├── docker (Dockerfile, future deployment)requirements.txt
+├── docs
+└── pyproject.toml
