@@ -63,10 +63,13 @@ The pipeline is implemented as a [LangGraph](https://github.com/langchain-ai/lan
 | `src/sarma/graph/nodes.py` | Node functions: `retrieve_node`, `generate_node`, `gis_node`, `no_context_node`, `route_by_relevance`. |
 | `src/sarma/graph/workflow.py` | `create_sarma_graph()` — assembles the nodes into the compiled graph described above. This is the **only actively used implementation**. |
 | `src/sarma/graph/guardrails.py` | An optional, **not wired in** input-screening node (pattern-based prompt-injection checks) — see its docstring to enable it. |
+<<<<<<< HEAD
 
 ## Archived (not part of the active system)
 
 `data/archive/assistant.py` (`SarmaAssistant` class) and `data/archive/rag/rag.py` (`create_rag_chain()`) are an earlier, simpler non-graph implementation of the same retrieve→generate flow, kept for reference only. They predate the GIS branch, were never updated to pass `gis_data` to `rag_prompt`, and would raise a missing-variable error if run as-is. They're retired rather than fixed, since `create_sarma_graph()` supersedes them.
+=======
+>>>>>>> 47c2fe08b7618187f07cb194acd3204613bac31e
 
 ## Setup
 
@@ -104,7 +107,10 @@ Core pipeline (ingestion → embeddings → retrieval, and GIS analysis → NDVI
 
 - **Retrieval confidence gate is currently disabled.** `route_by_relevance()` in `graph/nodes.py` is hardcoded to always proceed to generation instead of routing on `sufficient_context`; a question with no relevant documents will still get an answer instead of an explicit refusal.
 - **GIS analysis re-runs on every question**, with no caching, even though the AOI and date range never change between calls — `analyse_area()` re-downloads/re-computes everything each time.
+<<<<<<< HEAD
 - **AOI and date range are hardcoded**, not derived from the question — the system currently answers about one fixed location only.
+=======
+>>>>>>> 47c2fe08b7618187f07cb194acd3204613bac31e
 - **Vector store ingestion is not idempotent** — re-running ingestion into the same Chroma directory appends duplicate chunks rather than upserting.
 - `docs/architecture.md`, `docs/decisions.md`, and `docs/roadmap.md` describe an earlier, RAG-only version of the graph and the old (pre-archive) file/notebook layout — they need updating to reflect the GIS branch, the archived legacy implementation, and the points above.
 - `requirements.txt` is a raw environment export, not a portable dependency list (see Setup).
