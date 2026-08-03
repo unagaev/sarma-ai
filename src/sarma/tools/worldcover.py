@@ -16,9 +16,7 @@ from tqdm.auto import tqdm
 # PATHS
 # =====================================================
 
-BASE_DIR = Path(
-    r"C:\Users\rost8\OneDrive\Desktop\SARMA\src\sarma\tools"
-)
+BASE_DIR = Path(__file__).resolve().parent
 
 AOI_FILE = BASE_DIR / "aoi" / "NT-Polygon-2026.geojson"
 

@@ -17,6 +17,10 @@ chroma/
 data/chroma_db
 notebooks/chroma_db
 
+# Graphic
+data/*.jpg
+data/*.png
+
 # MD
 docs/
 
