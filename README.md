@@ -63,7 +63,6 @@ The pipeline is implemented as a [LangGraph](https://github.com/langchain-ai/lan
 | `src/sarma/graph/nodes.py` | Node functions: `retrieve_node`, `generate_node`, `gis_node`, `no_context_node`, `route_by_relevance`. |
 | `src/sarma/graph/workflow.py` | `create_sarma_graph()` — assembles the nodes into the compiled graph described above. |
 | `src/sarma/graph/guardrails.py` | An optional, **not wired in** input-screening node (pattern-based prompt-injection checks) — see its docstring to enable it. |
-| `src/sarma/assistant.py`, `src/sarma/rag/rag.py` | An older, simpler non-graph implementation (`SarmaAssistant` class, `create_rag_chain()`). **Currently broken** — see Status below. |
 
 ## Setup
 
