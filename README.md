@@ -4,7 +4,7 @@ Geospatial Environmental Intelligence Assistant — a local Retrieval-Augmented 
 
 ## What it does
 
-Given a natural-language question, SARMA runs two independent analyses in parallel and merges both into one LLM-generated answer:
+Given a natural-language question, SARMA runs two independent analyses and merges both into one LLM-generated answer:
 
 - **Document retrieval (RAG):** semantic search over a local Chroma vector store built from PDF documents (currently a UK agronomy nutrient-management guide and the Sentinel-2 product specification), returning cited passages.
 - **GIS analysis:** land cover classification (ESA WorldCover) and vegetation index (NDVI, from live Sentinel-2 imagery) for a fixed area of interest.
@@ -40,7 +40,7 @@ PART 2 — answer a question (online, via a LangGraph StateGraph)
                                                             answer + citations
 ```
 
-The pipeline is implemented as a [LangGraph](https://github.com/langchain-ai/langgraph) `StateGraph` (`src/sarma/graph/`), which runs the GIS and retrieval branches from `START` and joins them before generation. See `docs/architecture.md` and `docs/decisions.md` for background — note both currently describe an earlier, RAG-only version of the graph and need updating to reflect the GIS branch (see Status below).
+The pipeline is implemented as a [LangGraph](https://github.com/langchain-ai/langgraph) `StateGraph` (`src/sarma/graph/`), which runs the GIS and retrieval branches from `START` and joins them before generation. See `docs/architecture.md` and `docs/decisions.md` for background — note both currently describe an earlier, RAG-only version of the graph and need updating to reflect the GIS branch and the current file layout (see Status below).
 
 ## Project structure
 
@@ -61,9 +61,12 @@ The pipeline is implemented as a [LangGraph](https://github.com/langchain-ai/lan
 | `src/sarma/tools/analysis.py` | `analyse_area()` — orchestrates the three modules above into one GIS result. |
 | `src/sarma/graph/state.py` | `SarmaState` — the shared state passed between graph nodes. |
 | `src/sarma/graph/nodes.py` | Node functions: `retrieve_node`, `generate_node`, `gis_node`, `no_context_node`, `route_by_relevance`. |
-| `src/sarma/graph/workflow.py` | `create_sarma_graph()` — assembles the nodes into the compiled graph described above. |
+| `src/sarma/graph/workflow.py` | `create_sarma_graph()` — assembles the nodes into the compiled graph described above. This is the **only actively used implementation**. |
 | `src/sarma/graph/guardrails.py` | An optional, **not wired in** input-screening node (pattern-based prompt-injection checks) — see its docstring to enable it. |
-| `src/sarma/assistant.py`, `src/sarma/rag/rag.py` | An older, simpler non-graph implementation (`SarmaAssistant` class, `create_rag_chain()`). **Currently broken** — see Status below. |
+
+## Archived (not part of the active system)
+
+`data/archive/assistant.py` (`SarmaAssistant` class) and `data/archive/rag/rag.py` (`create_rag_chain()`) are an earlier, simpler non-graph implementation of the same retrieve→generate flow, kept for reference only. They predate the GIS branch, were never updated to pass `gis_data` to `rag_prompt`, and would raise a missing-variable error if run as-is. They're retired rather than fixed, since `create_sarma_graph()` supersedes them.
 
 ## Setup
 
@@ -93,19 +96,20 @@ print(result["citations"])
 print(result["gis_data"])
 ```
 
-See `notebooks/04_assistant_test.ipynb` for full runs and `notebooks/06_sentinel_ndvi_test.ipynb` for a standalone Sentinel-2 → NDVI test. A real run against the current fixed AOI returned land cover of roughly 51.5% grassland, 33.5% permanent water, 14% tree cover, and a mean NDVI of 0.51.
+See `notebooks/03_workflow_test.ipynb` for a full run of the compiled graph, and `notebooks/04_retrieval_eval.ipynb` for retrieval recall@k, score-distribution, and end-to-end routing checks. A real run against the current fixed AOI returned land cover of roughly 51.5% grassland, 33.5% permanent water, 14% tree cover, and a mean NDVI of 0.51.
 
 ## Status
 
-Core pipeline (ingestion → embeddings → retrieval, and GIS analysis → NDVI/land cover) both run end-to-end and merge into one grounded, cited answer via the LangGraph implementation. Known gaps, in rough priority order:
+Core pipeline (ingestion → embeddings → retrieval, and GIS analysis → NDVI/land cover) both run end-to-end and merge into one grounded, cited answer via the LangGraph implementation, with the vector store now persisted at the correct, code-referenced path (`data/chroma_db`) and re-ingested successfully. Known gaps, in rough priority order:
 
 - **Retrieval confidence gate is currently disabled.** `route_by_relevance()` in `graph/nodes.py` is hardcoded to always proceed to generation instead of routing on `sufficient_context`; a question with no relevant documents will still get an answer instead of an explicit refusal.
 - **GIS analysis re-runs on every question**, with no caching, even though the AOI and date range never change between calls — `analyse_area()` re-downloads/re-computes everything each time.
 - **AOI and date range are hardcoded**, not derived from the question — the system currently answers about one fixed location only.
-- **`assistant.py` and `rag/rag.py` are broken.** Neither passes `gis_data` to `rag_prompt`, which now requires it — both raise a missing-variable error if called. They predate the GIS branch and are superseded by `create_sarma_graph()`; recommend retiring them rather than fixing them, to avoid maintaining two implementations of the same pipeline.
 - **Vector store ingestion is not idempotent** — re-running ingestion into the same Chroma directory appends duplicate chunks rather than upserting.
-- **`tools/worldcover.py` has a hardcoded, machine-specific path** (`BASE_DIR`), so it only runs as-is on the original development machine.
-- `docs/architecture.md`, `docs/decisions.md`, and `docs/roadmap.md` describe an earlier, RAG-only version of the graph and need updating to reflect the GIS branch and the points above.
+- `docs/architecture.md`, `docs/decisions.md`, and `docs/roadmap.md` describe an earlier, RAG-only version of the graph and the old (pre-archive) file/notebook layout — they need updating to reflect the GIS branch, the archived legacy implementation, and the points above.
+- `requirements.txt` is a raw environment export, not a portable dependency list (see Setup).
+
+Resolved since the last pass: the fragile `CHROMA_PATH` (now resolved relative to the package file, not the process's working directory); the hardcoded, machine-specific path in `tools/worldcover.py` (now resolved relative to the file, same fix); and the two broken legacy implementations (`assistant.py`, `rag/rag.py`), retired to `data/archive/` rather than patched.
 
 ## Knowledge base
 
